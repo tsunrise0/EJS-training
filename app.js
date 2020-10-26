@@ -1,22 +1,18 @@
 //jshint esversion:6
+// Code Note: Change all var to let
 
 const express = require('express');
 const bodyParser = require('body-parser');
 const https = require('https');
 const app = express();
 
-var items = []; //Global scope
+//Global scope 
+var items = []; 
+var workItems = [];
 
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.set('view engine', 'ejs');
-
-app.post("/", function (req, res) {
-    var item = req.body.newItem;
-    items.push(item); //Use global items.
-    console.log(req.body.newItem);
-    res.redirect("/");
-  })
 
 app.get("/", function (req, res) {
 
@@ -33,9 +29,33 @@ app.get("/", function (req, res) {
 
     var day = today.toLocaleDateString("en-In", options)
 
-    res.render('list', {kindOfDay: day, newListItems: items}) //{day: day} --> Standard coding practice
+    res.render('list', {listTitle: day, newListItems: items}) //{day: day} --> Standard coding practice
     
 });
+
+app.get("/work", function (req,res) {
+    res.render('list', {listTitle: "Work List", newListItems: workItems})
+  })
+
+app.get("/about", function (req,res) {
+    res.render('about');
+  })
+
+app.post("/", function (req, res) {
+    
+    var item = req.body.newItem;
+
+    if (req.body.listButton === "Work List"){
+        workItems.push(item); //Use global workItems.
+        console.log("Work Item: ", req.body.newItem);
+        res.redirect("/work");
+    } else {
+        items.push(item); //Use global items.
+        console.log(req.body.newItem);
+        res.redirect("/");
+    }
+
+  })
 
 app.listen(3000, function(){
     console.log("Server is now running");
