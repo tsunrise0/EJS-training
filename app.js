@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const https = require('https');
 const app = express();
+const date = require(__dirname + '/date.js'); // Creating and referencing module.
 
 //Global scope 
 var items = []; 
@@ -16,20 +17,9 @@ app.set('view engine', 'ejs');
 
 app.get("/", function (req, res) {
 
-    var today = new Date();
-    
-    //Newer Advanced Code.
-    //Basically, this code aims at automating the process for us.
-    //Code will use toLocaleDateString
-    var options = { // Object options
-        weekday: "long",
-        day: "numeric",
-        month: "long"
-    };
+    var day = date.getDate(); // Using the module. 
 
-    var day = today.toLocaleDateString("en-In", options)
-
-    res.render('list', {listTitle: day, newListItems: items}) //{day: day} --> Standard coding practice
+    res.render('list', {listTitle: day, newListItems: items}) //{day: day} --> Standard coding practice. Simplified here for better understanding.
     
 });
 
